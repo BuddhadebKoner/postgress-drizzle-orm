@@ -14,9 +14,10 @@ const Navbar = () => {
                <div className="flex items-center">
                   <Link href="/" className="group">
                      <h1 className="text-xl sm:text-2xl font-bold text-foreground group-hover:text-primary transition-colors duration-200">
-                        BlogApp
+                        Super Blogs
                      </h1>
                   </Link>
+                  
                </div>
 
                {/* Navigation Links - Hidden on mobile, shown on desktop */}
@@ -28,7 +29,7 @@ const Navbar = () => {
                      Home
                   </Link>
                   <Link
-                     href="/blog"
+                     href="/blogs"
                      className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
                   >
                      Blog
@@ -45,8 +46,9 @@ const Navbar = () => {
                <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2 rounded-md border border-border bg-card p-1.5">
                      <OrganizationSwitcher
-                        afterSelectOrganizationUrl="/org/:slug"
+                        afterSelectOrganizationUrl="/:slug"
                         afterLeaveOrganizationUrl="/"
+                        afterSelectPersonalUrl={"/"}
                         appearance={{
                            elements: {
                               organizationSwitcherTrigger: "text-foreground hover:bg-accent hover:text-accent-foreground",

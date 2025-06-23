@@ -39,3 +39,48 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+Dockerfile.local
+*.docker
+
+# Database
+/postgres-data/
+/db-data/
+*.db
+*.sqlite
+*.sqlite3
+
+# Drizzle ORM
+drizzle/
+/migrations/
+*.sql.log
+
+# Logs
+logs/
+*.log
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Backup files
+*.bak
+*.backup
+*.dump
+
+# Temporary files
+tmp/
+temp/
+.tmp/
