@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth, currentUser } from '@clerk/nextjs/server'
 import { db } from '@/db'
 import { blogs } from '@/db/schema'
-import { eq, desc } from 'drizzle-orm'
+import { eq, desc, and } from 'drizzle-orm'
 
 // Simple validation function instead of zod for now
 function validateBlogData(data: any) {
@@ -169,6 +169,78 @@ export async function GET(request: NextRequest) {
 
    } catch (error) {
       console.error('Error fetching blogs:', error)
+      return NextResponse.json(
+         { error: 'Internal server error' },
+         { status: 500 }
+      )
+   }
+}
+
+export async function PATCH(request: NextRequest) {
+   try {
+      // Check authentication
+      const { userId } = await auth()
+      if (!userId) {
+         return NextResponse.json(
+            { error: 'Unauthorized - Please sign in' },
+            { status: 401 }
+         )
+      }
+
+      // Parse request body
+      const body = await request.json()
+      const { blogId, status, isPublic } = body
+
+      if (!blogId) {
+         return NextResponse.json(
+            { error: 'Blog ID is required' },
+            { status: 400 }
+         )
+      }
+
+      if (status && !['draft', 'published'].includes(status)) {
+         return NextResponse.json(
+            { error: 'Status must be either draft or published' },
+            { status: 400 }
+         )
+      }
+
+      // Prepare update data
+      const updateData: any = {}
+      
+      if (status !== undefined) {
+         updateData.status = status
+         updateData.publishedAt = status === 'published' ? new Date() : null
+         updateData.updatedAt = new Date()
+      }
+      
+      if (isPublic !== undefined) {
+         updateData.isPublic = Boolean(isPublic)
+         updateData.updatedAt = new Date()
+      }
+
+      // Update blog (only if user owns it)
+      const [updatedBlog] = await db
+         .update(blogs)
+         .set(updateData)
+         .where(and(eq(blogs.id, blogId), eq(blogs.clerkId, userId)))
+         .returning()
+
+      if (!updatedBlog) {
+         return NextResponse.json(
+            { error: 'Blog not found or you do not have permission to update it' },
+            { status: 404 }
+         )
+      }
+
+      return NextResponse.json({
+         success: true,
+         message: 'Blog updated successfully',
+         blog: updatedBlog
+      })
+
+   } catch (error) {
+      console.error('Error updating blog:', error)
       return NextResponse.json(
          { error: 'Internal server error' },
          { status: 500 }

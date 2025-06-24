@@ -5,12 +5,14 @@
   "scripts": {
     "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
+    "dev:turbo": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/clerk-react": "^5.32.1",
     "@clerk/nextjs": "^6.22.0",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.3",

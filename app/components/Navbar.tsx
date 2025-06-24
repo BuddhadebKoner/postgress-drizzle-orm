@@ -1,9 +1,16 @@
+'use client'
+
 import { OrganizationSwitcher, UserButton } from '@clerk/nextjs'
 import Link from 'next/link'
 import React from 'react'
 import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { useOrganization } from '@clerk/nextjs'
+import { PlusCircle } from 'lucide-react'
 
 const Navbar = () => {
+   const { organization } = useOrganization()
+   
    return (
       <nav className={cn(
          "sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
@@ -44,11 +51,24 @@ const Navbar = () => {
 
                {/* User Actions */}
                <div className="flex items-center gap-3">
+                  {/* Create Blog Button - Only show when organization is selected */}
+                  {organization && (
+                     <Link href={`/org/${organization.slug}`}>
+                        <Button 
+                           size="sm" 
+                           className="hidden sm:flex items-center gap-2"
+                        >
+                           <PlusCircle className="h-4 w-4" />
+                           Create Blog
+                        </Button>
+                     </Link>
+                  )}
+                  
                   <div className="flex items-center gap-2 rounded-md border border-border bg-card p-1.5">
                      <OrganizationSwitcher
                         afterSelectOrganizationUrl="/:slug"
                         afterLeaveOrganizationUrl="/"
-                        afterSelectPersonalUrl={"/"}
+                        afterSelectPersonalUrl={"/profile"}
                         appearance={{
                            elements: {
                               organizationSwitcherTrigger: "text-foreground hover:bg-accent hover:text-accent-foreground",
@@ -76,25 +96,37 @@ const Navbar = () => {
          {/* Mobile Navigation - You can expand this later */}
          <div className="md:hidden border-t border-border">
             <div className="container mx-auto px-4 py-2">
-               <div className="flex space-x-6">
-                  <Link
-                     href="/"
-                     className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                     Home
-                  </Link>
-                  <Link
-                     href="/blog"
-                     className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                     Blog
-                  </Link>
-                  <Link
-                     href="/about"
-                     className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                     About
-                  </Link>
+               <div className="flex items-center justify-between">
+                  <div className="flex space-x-6">
+                     <Link
+                        href="/"
+                        className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                     >
+                        Home
+                     </Link>
+                     <Link
+                        href="/blog"
+                        className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                     >
+                        Blog
+                     </Link>
+                     <Link
+                        href="/about"
+                        className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                     >
+                        About
+                     </Link>
+                  </div>
+                  
+                  {/* Mobile Create Blog Button */}
+                  {organization && (
+                     <Link href={`/org/${organization.slug}`}>
+                        <Button size="sm" className="flex items-center gap-2">
+                           <PlusCircle className="h-4 w-4" />
+                           Create
+                        </Button>
+                     </Link>
+                  )}
                </div>
             </div>
          </div>
